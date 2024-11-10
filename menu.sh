@@ -92,7 +92,6 @@ show_menu() {
     printf "  %-45s\n" "2 - Fechar Porta"
     printf "  %-45s\n" "0 - Voltar ao menu"
     echo "------------------------------------------------"
-    echo
     read -p " --> OPÇÃO: " option
 
     case $option in
@@ -104,7 +103,7 @@ show_menu() {
             done
             read -p "Status: " status
             add_proxy_port $port "$status"
-            read -p "> Porta ativada com sucesso." 
+            echo "> Porta ativada com sucesso." 
             sleep 2.5s
             show_menu
             ;;
@@ -115,7 +114,7 @@ show_menu() {
                 read -p "Digite a porta: " port
             done
             del_proxy_port $port
-            read -p "> Porta ativada com sucesso." 
+            echo "> Porta ativada com sucesso." 
             sleep 2.5s
             show_menu
             ;;
