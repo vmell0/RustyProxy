@@ -72,12 +72,12 @@ else
     increment_step
 
     # ---->>>> Criando o diretório do script
-    show_progress "Criando diretorio /opt/rustyproxy..."
+    show_progress "Criando diretorio.."
     mkdir -p /opt/rustyproxy > /dev/null 2>&1
     increment_step
 
     # ---->>>> Instalar rust
-    show_progress "Instalando Rust..."
+    show_progress "Instalando..."
     if ! command -v rustc &> /dev/null; then
         curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y > /dev/null 2>&1 || error_exit "Falha ao instalar Rust"
         source "$HOME/.cargo/env"
@@ -85,17 +85,17 @@ else
     increment_step
 
     # ---->>>> Instalar o RustyProxy
-    show_progress "Compilando RustyProxy, isso pode levar algum tempo dependendo da maquina..."
+    show_progress "Compilando, isso pode levar algum tempo dependendo da maquina..."
 
     if [ -d "/root/RustyProxy" ]; then
         rm -rf /root/RustyProxy
     fi
 
 
-    git clone --branch "main" https://github.com/vmell0/RustyProxy.git /root/RustyProxy > /dev/null 2>&1 || error_exit "Falha ao clonar rustyproxy"
+    git clone --branch "main" https://github.com/vmell0/RustyProxy.git /root/RustyProxy > /dev/null 2>&1 || error_exit "Falha ao clonar Proxy"
     mv /root/RustyProxy/menu.sh /opt/rustyproxy/menu
     cd /root/RustyProxy/RustyProxy
-    cargo build --release --jobs $(nproc) > /dev/null 2>&1 || error_exit "Falha ao compilar rustyproxy"
+    cargo build --release --jobs $(nproc) > /dev/null 2>&1 || error_exit "Falha ao compilar Proxy"
     mv ./target/release/RustyProxy /opt/rustyproxy/proxyy
     increment_step
 
@@ -103,7 +103,7 @@ else
     show_progress "Configurando permissões..."
     chmod +x /opt/rustyproxy/proxyy
     chmod +x /opt/rustyproxy/menu
-    ln -sf /opt/rustyproxy/menu /usr/local/bin/rustyproxy
+    ln -sf /opt/rustyproxy/menu /usr/local/bin/proxypro
     increment_step
 
     # ---->>>> Limpeza
@@ -113,5 +113,5 @@ else
     increment_step
 
     # ---->>>> Instalação finalizada :)
-    echo "Instalação concluída com sucesso. Digite 'rustyproxy' para acessar o menu."
+    echo "Instalação concluída com sucesso."
 fi

@@ -85,9 +85,8 @@ show_menu() {
             active_ports+=" $port"
         done < "$PORTS_FILE"
         printf "  Porta:%-35s\n" "$active_ports"
-    fi
-
     echo "------------------------------------------------"
+    fi
     printf "  %-45s\n" "1 - Abrir Porta"
     printf "  %-45s\n" "2 - Fechar Porta"
     printf "  %-45s\n" "0 - Voltar ao menu"
