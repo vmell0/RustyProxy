@@ -73,7 +73,7 @@ del_proxy_port() {
 show_menu() {
     clear
     echo "------------------------------------------------"
-    printf "|                  %-28s|\n" "RUSTY PROXY"
+    printf "                  %-28s\n" "PROXY-PRO"
     echo "------------------------------------------------"
     
     # Verifica se há portas ativas
@@ -84,13 +84,13 @@ show_menu() {
         while read -r port; do
             active_ports+=" $port"
         done < "$PORTS_FILE"
-        printf "| Porta:%-35s|\n" "$active_ports"
+        printf "  Porta:%-35s\n" "$active_ports"
     fi
 
     echo "------------------------------------------------"
-    printf "| %-45s|\n" "1 - Abrir Porta"
-    printf "| %-45s|\n" "2 - Fechar Porta"
-    printf "| %-45s|\n" "0 - Voltar ao menu"
+    printf "  %-45s\n" "1 - Abrir Porta"
+    printf "  %-45s\n" "2 - Fechar Porta"
+    printf "  %-45s\n" "0 - Voltar ao menu"
     echo "------------------------------------------------"
     echo
     read -p " --> OPÇÃO: " option
@@ -102,9 +102,11 @@ show_menu() {
                 echo "Digite uma porta válida."
                 read -p "Digite a porta: " port
             done
-            read -p "Digite o status de conexão (deixe vazio para o padrão): " status
+            read -p "Status: " status
             add_proxy_port $port "$status"
-            read -p "> Porta ativada com sucesso. Pressione qualquer tecla para voltar ao menu." dummy
+            read -p "> Porta ativada com sucesso." 
+            sleep 2.5s
+            show_menu
             ;;
         2)
             read -p "Digite a porta: " port
@@ -113,7 +115,9 @@ show_menu() {
                 read -p "Digite a porta: " port
             done
             del_proxy_port $port
-            read -p "> Porta desativada com sucesso. Pressione qualquer tecla para voltar ao menu." dummy
+            read -p "> Porta ativada com sucesso." 
+            sleep 2.5s
+            show_menu
             ;;
         0)
             exit 0
