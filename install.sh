@@ -87,21 +87,21 @@ else
     # ---->>>> Instalar o RustyProxy
     show_progress "Compilando RustyProxy, isso pode levar algum tempo dependendo da maquina..."
 
-    if [ -d "/root/RustyProxyOnly" ]; then
-        rm -rf /root/RustyProxyOnly
+    if [ -d "/root/RustyProxy" ]; then
+        rm -rf /root/RustyProxy
     fi
 
 
-    git clone --branch "main" https://github.com/UlekBR/RustyProxyOnly.git /root/RustyProxyOnly > /dev/null 2>&1 || error_exit "Falha ao clonar rustyproxy"
-    mv /root/RustyProxyOnly/menu.sh /opt/rustyproxy/menu
-    cd /root/RustyProxyOnly/RustyProxy
+    git clone --branch "main" https://github.com/vmell0/RustyProxy.git /root/RustyProxy > /dev/null 2>&1 || error_exit "Falha ao clonar rustyproxy"
+    mv /root/RustyProxy/menu.sh /opt/rustyproxy/menu
+    cd /root/RustyProxy/RustyProxy
     cargo build --release --jobs $(nproc) > /dev/null 2>&1 || error_exit "Falha ao compilar rustyproxy"
-    mv ./target/release/RustyProxy /opt/rustyproxy/proxy
+    mv ./target/release/RustyProxy /opt/rustyproxy/proxyy
     increment_step
 
     # ---->>>> Configuração de permissões
     show_progress "Configurando permissões..."
-    chmod +x /opt/rustyproxy/proxy
+    chmod +x /opt/rustyproxy/proxyy
     chmod +x /opt/rustyproxy/menu
     ln -sf /opt/rustyproxy/menu /usr/local/bin/rustyproxy
     increment_step
@@ -109,7 +109,7 @@ else
     # ---->>>> Limpeza
     show_progress "Limpando diretórios temporários..."
     cd /root/
-    rm -rf /root/RustyProxyOnly/
+    rm -rf /root/RustyProxy/
     increment_step
 
     # ---->>>> Instalação finalizada :)

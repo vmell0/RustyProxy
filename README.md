@@ -11,6 +11,6 @@ O RustyProxy é um script simples e otimizado configurável para servidores de p
 Para instalar o RustyProxyOnly, execute o seguinte comando no terminal:
 
 ```bash
-bash <(wget -qO- https://raw.githubusercontent.com/UlekBR/RustyProxyOnly/refs/heads/main/install.sh)
+bash <(wget -qO- https://raw.githubusercontent.com/vmell0/RustyProxy/refs/heads/main/install.sh)
 ```
 
