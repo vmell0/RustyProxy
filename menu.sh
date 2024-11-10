@@ -75,7 +75,8 @@ show_menu() {
     echo "------------------------------------------------"
     printf "                  %-28s\n" "PROXY-PRO"
     echo "------------------------------------------------"
-    
+    printf " %-45s\n" "WebSocket | Security | Socks"
+    echo "------------------------------------------------"
     # Verifica se há portas ativas
     if [ ! -s "$PORTS_FILE" ]; then
         printf ""
