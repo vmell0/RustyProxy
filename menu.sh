@@ -72,11 +72,11 @@ del_proxy_port() {
 # Função para exibir o menu formatado
 show_menu() {
     clear
-    echo "------------------------------------------------"
-    printf "                  %-28s\n" "PROXY-PRO"
-    echo "------------------------------------------------"
-    printf "   %-28s\n" "WebSocket | Security | Socks"
-    echo "------------------------------------------------"
+    echo "---------------------------------------------"
+    printf "                 %-28s\n" "PROXY-PRO"
+    echo "---------------------------------------------"
+    printf "   %-28s\n" "Apenas: WebSocket | Security | Socks"
+    echo "---------------------------------------------"
     # Verifica se há portas ativas
     if [ ! -s "$PORTS_FILE" ]; then
         printf ""
@@ -86,12 +86,12 @@ show_menu() {
             active_ports+=" $port"
         done < "$PORTS_FILE"
         printf "  Porta:%-35s\n" "$active_ports"
-    echo "------------------------------------------------"
+    echo "---------------------------------------------"
     fi
     printf "  %-45s\n" "1 - Abrir Porta"
     printf "  %-45s\n" "2 - Fechar Porta"
     printf "  %-45s\n" "0 - Voltar ao menu"
-    echo "------------------------------------------------"
+    echo "---------------------------------------------"
     read -p " --> OPÇÃO: " option
 
     case $option in
