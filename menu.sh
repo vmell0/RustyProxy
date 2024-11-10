@@ -104,7 +104,6 @@ show_menu() {
             read -p "Status: " status
             add_proxy_port $port "$status"
             echo "> Porta ativada com sucesso." 
-            sleep 2.5s
             show_menu
             ;;
         2)
@@ -114,8 +113,7 @@ show_menu() {
                 read -p "Digite a porta: " port
             done
             del_proxy_port $port
-            echo "> Porta ativada com sucesso." 
-            sleep 2.5s
+            echo "> Porta ativada com sucesso."
             show_menu
             ;;
         0)
