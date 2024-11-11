@@ -1,6 +1,8 @@
 #!/bin/bash
 
 PORTS_FILE="/opt/rustyproxy/ports"
+DEFAULT_BUFFER_SIZE=32768
+LOG_DIR="/var/log"
 
 # Função para verificar se uma porta está em uso
 is_port_in_use() {
@@ -16,13 +18,14 @@ is_port_in_use() {
 add_proxy_port() {
     local port=$1
     local status=${2:-"WebSocket"}
+    local proxy_log_file="$LOG_DIR/proxy-$port.log"
 
     if is_port_in_use $port; then
         echo "A porta $port já está em uso."
         return
     fi
 
-    local command="/opt/rustyproxy/proxypro --port $port --status $status"
+    local command="/opt/rustyproxy/proxypro --port $port --buffer-size=$DEFAULT_BUFFER_SIZE --status $status --log-file=$proxy_log_file"
     local service_file_path="/etc/systemd/system/proxypro${port}.service"
     local service_file_content="[Unit]
 Description=ProxyPro${port}
