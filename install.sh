@@ -96,12 +96,12 @@ else
     mv /root/RustyProxy/menu.sh /opt/rustyproxy/menu
     cd /root/RustyProxy/RustyProxy
     cargo build --release --jobs $(nproc) > /dev/null 2>&1 || error_exit "Falha ao compilar Proxy"
-    mv ./target/release/RustyProxy /opt/rustyproxy/proxyy
+    mv ./target/release/RustyProxy /opt/rustyproxy/proxypro
     increment_step
 
     # ---->>>> Configuração de permissões
     show_progress "Configurando permissões..."
-    chmod +x /opt/rustyproxy/proxyy
+    chmod +x /opt/rustyproxy/proxypro
     chmod +x /opt/rustyproxy/menu
     ln -sf /opt/rustyproxy/menu /usr/local/bin/proxypro
     increment_step

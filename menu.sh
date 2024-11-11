@@ -22,8 +22,8 @@ add_proxy_port() {
         return
     fi
 
-    local command="/opt/rustyproxy/proxyy --port $port --status $status"
-    local service_file_path="/etc/systemd/system/proxyy${port}.service"
+    local command="/opt/rustyproxy/proxypro --port $port --status $status"
+    local service_file_path="/etc/systemd/system/proxypro${port}.service"
     local service_file_content="[Unit]
 Description=RustyProxy${port}
 After=network.target
@@ -47,8 +47,8 @@ WantedBy=multi-user.target"
 
     echo "$service_file_content" | sudo tee "$service_file_path" > /dev/null
     sudo systemctl daemon-reload
-    sudo systemctl enable "proxyy${port}.service"
-    sudo systemctl start "proxyy${port}.service"
+    sudo systemctl enable "proxypro${port}.service"
+    sudo systemctl start "proxypro${port}.service"
 
     # Salvar a porta no arquivo
     echo $port >> "$PORTS_FILE"
@@ -59,9 +59,9 @@ WantedBy=multi-user.target"
 del_proxy_port() {
     local port=$1
 
-    sudo systemctl disable "proxyy${port}.service"
-    sudo systemctl stop "proxyy${port}.service"
-    sudo rm -f "/etc/systemd/system/proxyy${port}.service"
+    sudo systemctl disable "proxypro${port}.service"
+    sudo systemctl stop "proxypro${port}.service"
+    sudo rm -f "/etc/systemd/system/proxypro${port}.service"
     sudo systemctl daemon-reload
 
     # Remover a porta do arquivo
