@@ -72,13 +72,24 @@ del_proxy_port() {
     echo "Porta $port fechada com sucesso."
 }
 
+reiniciar_proxy_port() {
+    local port=$1
+
+    sudo systemctl restart "proxypro${port}.service"
+    sudo systemctl daemon-reload
+
+    # Remover a porta do arquivo
+    echo "Porta $port reiniciada com sucesso."
+}
+
 # Função para exibir o menu formatado
 show_menu() {
     clear
     echo "---------------------------------------------"
     printf "                 %-28s\n" "PROXY-PRO"
+	printf "                %-28s\n" "VERSÃO: 1.0.2"
     echo "---------------------------------------------"
-    printf "   %-28s\n" "Apenas: WebSocket | Security | Socks"
+    printf "   %-28s\n" "Não Funciona Modo SSL"
     echo "---------------------------------------------"
     # Verifica se há portas ativas
     if [ ! -s "$PORTS_FILE" ]; then
@@ -93,6 +104,7 @@ show_menu() {
     fi
     printf "  %-45s\n" "1 - Abrir Porta"
     printf "  %-45s\n" "2 - Fechar Porta"
+	printf "  %-45s\n" "3 - Reiniciar Porta"
     printf "  %-45s\n" "0 - Voltar ao menu"
     echo "---------------------------------------------"
     read -p " --> OPÇÃO: " option
@@ -117,6 +129,16 @@ show_menu() {
             done
             del_proxy_port $port
             echo "> Porta ativada com sucesso."
+            show_menu
+            ;;
+		3)
+            read -p "Digite a porta: " port
+            while ! [[ $port =~ ^[0-9]+$ ]]; do
+                echo "Digite uma porta válida."
+                read -p "Digite a porta: " port
+            done
+            reiniciar_proxy_port $port
+            echo "> Porta reiniciada com sucesso."
             show_menu
             ;;
         0)
