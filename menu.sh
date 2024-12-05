@@ -1,31 +1,32 @@
 #!/bin/bash
 
 PORTS_FILE="/opt/rustyproxy/ports"
-DEFAULT_BUFFER_SIZE=32768
-LOG_DIR="/var/log"
 
 # Função para verificar se uma porta está em uso
 is_port_in_use() {
     local port=$1
-    if lsof -i :$port > /dev/null 2>&1; then
-        return 0
+    
+    if netstat -tuln 2>/dev/null | grep -q ":[0-9]*$port\b"; then
+        return 0  
+    elif ss -tuln 2>/dev/null | grep -q ":[0-9]*$port\b"; then
+        return 0  
     else
-        return 1
+        return 1 
     fi
 }
+
 
 # Função para abrir uma porta de proxy
 add_proxy_port() {
     local port=$1
-    local status=${2:-"WebSocket"}
-    local proxy_log_file="$LOG_DIR/proxy-$port.log"
+    local status=${2:-"CentralVPN"}
 
     if is_port_in_use $port; then
         echo "A porta $port já está em uso."
         return
     fi
 
-    local command="/opt/rustyproxy/proxypro --port $port --buffer-size=$DEFAULT_BUFFER_SIZE --status $status --log-file=$proxy_log_file"
+    local command="/opt/rustyproxy/proxypro --port $port --status $status"
     local service_file_path="/etc/systemd/system/proxypro${port}.service"
     local service_file_content="[Unit]
 Description=ProxyPro${port}
@@ -36,7 +37,7 @@ LimitNOFILE=infinity
 LimitNPROC=infinity
 LimitMEMLOCK=infinity
 LimitSTACK=infinity
-LimitCORE=infinity
+LimitCORE=0
 LimitAS=infinity
 LimitRSS=infinity
 LimitCPU=infinity
@@ -72,72 +73,65 @@ del_proxy_port() {
     echo "Porta $port fechada com sucesso."
 }
 
-reiniciar_proxy_port() {
-    local port=$1
-
-    sudo systemctl restart "proxypro${port}.service"
-    sudo systemctl daemon-reload
-
-    # Remover a porta do arquivo
-    echo "Porta $port reiniciada com sucesso."
-}
-
 # Função para exibir o menu formatado
 show_menu() {
     clear
     echo "---------------------------------------------"
     printf "                 %-28s\n" "PROXY-PRO"
-	printf "                %-28s\n" "VERSÃO: 1.0.2"
+	printf "                %-28s\n" "VERSÃO: 1.0.3"
     echo "---------------------------------------------"
     printf "   %-28s\n" "Não Funciona Modo SSL"
     echo "---------------------------------------------"
+    
     # Verifica se há portas ativas
     if [ ! -s "$PORTS_FILE" ]; then
-        printf ""
+        printf "| Portas(s): %-34s|\n" "nenhuma"
     else
         active_ports=""
         while read -r port; do
             active_ports+=" $port"
         done < "$PORTS_FILE"
-        printf "  Porta:%-35s\n" "$active_ports"
-    echo "---------------------------------------------"
+        printf " Porta: %-35s|\n" "$active_ports"
     fi
-    printf "  %-45s\n" "1 - Abrir Porta"
-    printf "  %-45s\n" "2 - Fechar Porta"
-	printf "  %-45s\n" "3 - Reiniciar Porta"
-    printf "  %-45s\n" "0 - Voltar ao menu"
-    echo "---------------------------------------------"
+
+    echo "------------------------------------------------"
+    printf "  %-45s|\n" "1 - Abrir Porta"
+    printf "  %-45s|\n" "2 - Fechar Porta"
+    printf "  %-45s|\n" "3 - Reiniciar Porta"
+    printf "  %-45s|\n" "0 - Voltar ao menu"
+    echo "------------------------------------------------"
+    echo
     read -p " --> OPÇÃO: " option
 
     case $option in
         1)
-            read -p "Digite a porta: " port
+            read -p "Porta: " port
             while ! [[ $port =~ ^[0-9]+$ ]]; do
                 echo "Digite uma porta válida."
-                read -p "Digite a porta: " port
+                read -p "Porta: " port
             done
-            read -p "Status: " status
+            read -p "Status (CentralVPN): " status
             add_proxy_port $port "$status"
-            echo "> Porta ativada com sucesso." 
-            show_menu
+            read -p "> Porta ativada com sucesso. Pressione qualquer tecla para voltar ao menu." dummy
             ;;
         2)
-            read -p "Digite a porta: " port
+            read -p "Porta: " port
             while ! [[ $port =~ ^[0-9]+$ ]]; do
                 echo "Digite uma porta válida."
-                read -p "Digite a porta: " port
+                read -p "Porta: " port
             done
             del_proxy_port $port
-            echo "> Porta ativada com sucesso."
-            show_menu
+            read -p "> Porta desativada com sucesso. Pressione qualquer tecla para voltar ao menu." dummy
             ;;
-		3)
-            read -p "Digite a porta: " port
+        3)
+            read -p "Porta: " port
             while ! [[ $port =~ ^[0-9]+$ ]]; do
                 echo "Digite uma porta válida."
-                read -p "Digite a porta: " port
+                read -p "Porta: " port
             done
-            reiniciar_proxy_port $port
+            read -p "Status (CentralVPN): " status
+            del_proxy_port $port
+            add_proxy_port $port "$status"
             echo "> Porta reiniciada com sucesso."
             show_menu
             ;;
