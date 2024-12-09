@@ -85,16 +85,15 @@ show_menu() {
     
     # Verifica se há portas ativas
     if [ ! -s "$PORTS_FILE" ]; then
-        printf "| Portas(s): %-34s|\n" "nenhuma"
+         echo ""
     else
         active_ports=""
         while read -r port; do
             active_ports+=" $port"
         done < "$PORTS_FILE"
         printf " Porta: %-35s \n" "$active_ports"
+	echo "------------------------------------------------"
     fi
-
-    echo "------------------------------------------------"
     printf "  %-45s \n" "1 - Abrir Porta"
     printf "  %-45s \n" "2 - Fechar Porta"
     printf "  %-45s \n" "3 - Reiniciar Porta"
