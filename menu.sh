@@ -78,7 +78,7 @@ show_menu() {
     clear
     echo "---------------------------------------------"
     printf "                 %-28s\n" "PROXY-PRO"
-	printf "                %-28s\n" "VERSÃO: 1.0.4"
+	printf "                %-28s\n" "VERSÃO: 1.0.6"
     echo "---------------------------------------------"
     printf "   %-28s\n" "Não Funciona Modo SSL"
     echo "---------------------------------------------"
@@ -92,45 +92,57 @@ show_menu() {
             active_ports+=" $port"
         done < "$PORTS_FILE"
         printf " Porta: %-35s \n" "$active_ports"
-	echo "------------------------------------------------"
+	echo "---------------------------------------------"
     fi
     printf "  %-45s \n" "1 - Abrir Porta"
     printf "  %-45s \n" "2 - Fechar Porta"
     printf "  %-45s \n" "3 - Reiniciar Porta"
     printf "  %-45s \n" "0 - Voltar ao menu"
-    echo "------------------------------------------------"
+    echo "---------------------------------------------"
     echo
     read -p " --> OPÇÃO: " option
 
     case $option in
         1)
+		    echo ""
             read -p "Porta: " port
             while ! [[ $port =~ ^[0-9]+$ ]]; do
                 echo "Digite uma porta válida."
                 read -p "Porta: " port
             done
+			echo ""
             read -p "Status (CentralVPN): " status
             add_proxy_port $port "$status"
-            read -p "> Porta ativada com sucesso. Pressione qualquer tecla para voltar ao menu." dummy
+			echo ""
+			echo "> Porta ativada com sucesso."
+            show_menu
             ;;
         2)
+		    echo ""
             read -p "Porta: " port
             while ! [[ $port =~ ^[0-9]+$ ]]; do
                 echo "Digite uma porta válida."
+				echo ""
                 read -p "Porta: " port
             done
             del_proxy_port $port
-            read -p "> Porta desativada com sucesso. Pressione qualquer tecla para voltar ao menu." dummy
+			echo ""
+            echo "> Porta desativada com sucesso."
+            show_menu
             ;;
         3)
+		    echo ""
             read -p "Porta: " port
             while ! [[ $port =~ ^[0-9]+$ ]]; do
                 echo "Digite uma porta válida."
+				echo ""
                 read -p "Porta: " port
             done
+			echo ""
             read -p "Status (CentralVPN): " status
             del_proxy_port $port
             add_proxy_port $port "$status"
+			echo ""
             echo "> Porta reiniciada com sucesso."
             show_menu
             ;;
@@ -138,8 +150,8 @@ show_menu() {
             exit 0
             ;;
         *)
-            echo "Opção inválida. Pressione qualquer tecla para voltar ao menu."
-            read -n 1 dummy
+            echo "> Opcão invalida."
+            show_menu
             ;;
     esac
 }
