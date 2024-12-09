@@ -78,7 +78,7 @@ show_menu() {
     clear
     echo "---------------------------------------------"
     printf "                 %-28s\n" "PROXY-PRO"
-	printf "                %-28s\n" "VERSÃO: 1.0.3"
+	printf "                %-28s\n" "VERSÃO: 1.0.4"
     echo "---------------------------------------------"
     printf "   %-28s\n" "Não Funciona Modo SSL"
     echo "---------------------------------------------"
@@ -91,14 +91,14 @@ show_menu() {
         while read -r port; do
             active_ports+=" $port"
         done < "$PORTS_FILE"
-        printf " Porta: %-35s|\n" "$active_ports"
+        printf " Porta: %-35s \n" "$active_ports"
     fi
 
     echo "------------------------------------------------"
-    printf "  %-45s|\n" "1 - Abrir Porta"
-    printf "  %-45s|\n" "2 - Fechar Porta"
-    printf "  %-45s|\n" "3 - Reiniciar Porta"
-    printf "  %-45s|\n" "0 - Voltar ao menu"
+    printf "  %-45s \n" "1 - Abrir Porta"
+    printf "  %-45s \n" "2 - Fechar Porta"
+    printf "  %-45s \n" "3 - Reiniciar Porta"
+    printf "  %-45s \n" "0 - Voltar ao menu"
     echo "------------------------------------------------"
     echo
     read -p " --> OPÇÃO: " option
