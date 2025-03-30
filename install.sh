@@ -74,6 +74,14 @@ else
     # ---->>>> Criando o diretório do script
     show_progress "Criando diretorio.."
     mkdir -p /opt/rustyproxy > /dev/null 2>&1
+    mkdir -p /opt/rustymanager/ssl > /dev/null 2>&1
+	if [ -d "/opt/rustymanager/ssl/cert.pem" ]; then
+	cd /opt/rustymanager/ssl
+    wget https://raw.githubusercontent.com/vmell0/RustyProxy/refs/heads/main/Utils/ssl/cert.pem > /dev/null 2>&1
+	wget https://raw.githubusercontent.com/vmell0/RustyProxy/refs/heads/main/Utils/ssl/key.pem > /dev/null 2>&1
+    chmod +x /opt/rustymanager/ssl/cert.pem /opt/rustymanager/ssl/key.pem
+	cd	
+	fi
     increment_step
 
     # ---->>>> Instalar rust
@@ -100,13 +108,18 @@ else
     cd /root/RustyProxy/RustyProxy
     cargo build --release --jobs $(nproc) > /dev/null 2>&1 || error_exit "Falha ao compilar Proxy"
     mv ./target/release/RustyProxy /opt/rustyproxy/proxypro
+    cd /root/RustyProxy/RustySSL
+    cargo build --release --jobs $(nproc) > /dev/null 2>&1 || error_exit "Falha ao compilar SSL"
+    mv ./target/release/RustySSL /opt/rustyproxy/proxyprossl
     increment_step
 
     # ---->>>> Configuração de permissões
     show_progress "Configurando permissões..."
     chmod +x /opt/rustyproxy/proxypro
+	chmod +x /opt/rustyproxy/proxyprossl
     chmod +x /opt/rustyproxy/menu
     ln -sf /opt/rustyproxy/menu /usr/local/bin/proxypro
+	ln -sf /opt/rustyproxy/menu /usr/local/bin/proxyprossl
     increment_step
 
     # ---->>>> Limpeza
