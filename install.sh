@@ -71,19 +71,6 @@ else
     apt-get install curl build-essential git -y > /dev/null 2>&1 || error_exit "Falha ao instalar pacotes"
     increment_step
 
-    # ---->>>> Criando o diretório do script
-    show_progress "Criando diretorio.."
-    mkdir -p /opt/rustyproxy > /dev/null 2>&1
-    mkdir -p /opt/rustymanager/ssl > /dev/null 2>&1
-	if [ -d "/opt/rustymanager/ssl/cert.pem" ]; then
-	cd /opt/rustymanager/ssl
-    wget https://raw.githubusercontent.com/vmell0/RustyProxy/refs/heads/main/Utils/ssl/cert.pem > /dev/null 2>&1
-	wget https://raw.githubusercontent.com/vmell0/RustyProxy/refs/heads/main/Utils/ssl/key.pem > /dev/null 2>&1
-    chmod +x /opt/rustymanager/ssl/cert.pem /opt/rustymanager/ssl/key.pem
-	cd	
-	fi
-    increment_step
-
     # ---->>>> Instalar rust
     show_progress "Instalando..."
 	if [ -d "rustc-x86_64-unknown-linux-gnu" ]; then
@@ -98,26 +85,28 @@ else
 
     # ---->>>> Instalar o RustyProxy
     show_progress "Compilando, isso pode levar algum tempo dependendo da maquina..."
-
     if [ -d "/root/RustyProxy" ]; then
         rm -rf /root/RustyProxy
     fi
-
+    mkdir -p /opt/rustyproxy
+    mkdir -p /opt/rustyproxy/ssl
     git clone --branch "main" https://github.com/vmell0/RustyProxy.git /root/RustyProxy > /dev/null 2>&1 || error_exit "Falha ao clonar Proxy"
-    mv /root/RustyProxy/menu.sh /opt/rustyproxy/menu
-    cd /root/RustyProxy/RustyProxy
-    cargo build --release --jobs $(nproc) > /dev/null 2>&1 || error_exit "Falha ao compilar Proxy"
-    mv ./target/release/RustyProxy /opt/rustyproxy/proxypro
-    cd /root/RustyProxy/RustySSL
-    cargo build --release --jobs $(nproc) > /dev/null 2>&1 || error_exit "Falha ao compilar SSL"
-    mv ./target/release/RustySSL /opt/rustyproxy/proxyprossl
+
+    cd /root/RustyProxy
+	mv -f ./Utils/ssl/cert.pem /opt/rustyproxy/ssl/cert.pem > /dev/null 2>&1
+    mv -f ./Utils/ssl/key.pem /opt/rustyproxy/ssl/key.pem > /dev/null 2>&1
+	mv -f ./menu.sh /opt/rustyproxy/menu > /dev/null 2>&1
+	
+	## definindo compilador
+    export CC=clang
+    cargo build --release --jobs $(nproc) > /dev/null 2>&1 || error_exit "Falha ao compilar"
+    mv -f ./target/release/RustyProxy /opt/rustyproxy/proxymulti > /dev/null 2>&1
+    mv -f ./target/release/RustySSL /opt/rustyproxy/sslmulti > /dev/null 2>&1
     increment_step
 
     # ---->>>> Configuração de permissões
     show_progress "Configurando permissões..."
-    chmod +x /opt/rustyproxy/proxypro
-	chmod +x /opt/rustyproxy/proxyprossl
-    chmod +x /opt/rustyproxy/menu
+	chmod +x /opt/rustyproxy/{menu,menuproxy,proxymulti,sslmulti}
     ln -sf /opt/rustyproxy/menu /usr/local/bin/menuproxy
     increment_step
 
