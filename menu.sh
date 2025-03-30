@@ -73,66 +73,9 @@ del_proxy_port() {
     echo "Porta $port fechada com sucesso."
 }
 
-# Função para abrir uma porta ssl
-add_ssl_port() {
-    local port=$1
-
-    if is_port_in_use $port; then
-        echo "A porta $port já está em uso."
-        return
-    fi
-
-	local command2="/opt/rustyproxy/proxyprossl --proxy-port $port"
-    local service_file_path="/etc/systemd/system/proxyprossl${port}.service"
-    local service_file_content="[Unit]
-Description=ProxyProSSL${port}
-After=network.target
-
-[Service]
-LimitNOFILE=infinity
-LimitNPROC=infinity
-LimitMEMLOCK=infinity
-LimitSTACK=infinity
-LimitCORE=0
-LimitAS=infinity
-LimitRSS=infinity
-LimitCPU=infinity
-LimitFSIZE=infinity
-Type=simple
-ExecStart=${command2}
-Restart=always
-
-[Install]
-WantedBy=multi-user.target"
-
-    echo "$service_file_content" | sudo tee "$service_file_path" > /dev/null
-    sudo systemctl daemon-reload
-    sudo systemctl enable "proxyprossl${port}.service"
-    sudo systemctl start "proxyprossl${port}.service"
-
-    # Salvar a porta no arquivo
-    echo $port >> "$PORTS_FILE"
-    echo "Porta $port aberta com sucesso."
-}
-
-# Função para fechar uma porta de proxy
-del_ssl_port() {
-    local port=$1
-
-    sudo systemctl disable "proxyprossl${port}.service"
-    sudo systemctl stop "proxyprossl${port}.service"
-    sudo rm -f "/etc/systemd/system/proxyprossl${port}.service"
-    sudo systemctl daemon-reload
-
-    # Remover a porta do arquivo
-    sed -i "/^$port$/d" "$PORTS_FILE"
-    echo "Porta $port fechada com sucesso."
-}
-
 att_script() {
     rm -rf /usr/local/bin/menuproxy
 	rm -rf /opt/rustyproxy/proxypro
-	rm -rf /opt/rustyproxy/proxyprossl
 	rm -rf /opt/rustyproxy/menu
 	rm -rf /root/RustyProxy
 	sudo apt update -y && sudo apt upgrade -y
@@ -158,8 +101,7 @@ show_menu() {
 	echo "---------------------------------------------"
     fi
     printf "  %-45s \n" "1 - Modo Proxy"
-    printf "  %-45s \n" "2 - Modo SSL"
-	printf "  %-45s \n" "3 - Atualizar Script"
+	printf "  %-45s \n" "2 - Atualizar Script"
     printf "  %-45s \n" "0 - Voltar ao menu"
     echo "---------------------------------------------"
     echo
@@ -170,11 +112,7 @@ show_menu() {
 		    clear
             menu_proxy
             ;;
-        2)
-		    clear
-			menu_ssl
-            ;;
-		3)
+		2)
 		    clear
 			att_script
 			;;
@@ -224,55 +162,6 @@ menu_proxy() {
                 read -p "Porta: " port
             done
             del_proxy_port $port
-			echo ""
-            echo "> Porta desativada com sucesso."
-            show_menu
-            ;;
-        0)
-            exit 0
-            ;;
-        *)
-            echo "> Opcão invalida."
-            show_menu
-            ;;
-    esac
-}
-
-menu_ssl() {
-    clear
-    echo "---------------------------------------------"
-    printf "                 %-28s\n" "SSL"
-    echo "---------------------------------------------"
-    printf "  %-45s \n" "1 - Abrir Porta"
-    printf "  %-45s \n" "2 - Fechar Porta"
-    printf "  %-45s \n" "0 - Voltar"
-    echo "---------------------------------------------"
-    echo
-    read -p " --> OPÇÃO: " option
-
-    case $option in
-        1)
-		    echo ""
-            read -p "Porta: " port
-            while ! [[ $port =~ ^[0-9]+$ ]]; do
-                echo "Digite uma porta válida."
-                read -p "Porta: " port
-            done
-			echo ""
-            add_ssl_port $port
-			echo ""
-			echo "> Porta ativada com sucesso."
-            show_menu
-            ;;
-        2)
-		    echo ""
-            read -p "Porta: " port
-            while ! [[ $port =~ ^[0-9]+$ ]]; do
-                echo "Digite uma porta válida."
-				echo ""
-                read -p "Porta: " port
-            done
-            del_ssl_port $port
 			echo ""
             echo "> Porta desativada com sucesso."
             show_menu

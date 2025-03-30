@@ -1,5 +1,4 @@
 #!/bin/bash
-# rustyproxy Installer
 
 TOTAL_STEPS=9
 CURRENT_STEP=0
@@ -71,12 +70,13 @@ else
     apt-get install curl build-essential git -y > /dev/null 2>&1 || error_exit "Falha ao instalar pacotes"
     increment_step
 
+    # ---->>>> Criando o diretório do script
+    show_progress "Criando diretorio /opt/rustyproxy..."
+    mkdir -p /opt/rustyproxy > /dev/null 2>&1
+    increment_step
+
     # ---->>>> Instalar rust
-    show_progress "Instalando..."
-	if [ -d "rustc-x86_64-unknown-linux-gnu" ]; then
-        rm -rf ~/.rustup
-		rm -rf ~/rust-gdb
-    fi
+    show_progress "Instalando Rust..."
     if ! command -v rustc &> /dev/null; then
         curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y > /dev/null 2>&1 || error_exit "Falha ao instalar Rust"
         source "$HOME/.cargo/env"
@@ -84,29 +84,24 @@ else
     increment_step
 
     # ---->>>> Instalar o RustyProxy
-    show_progress "Compilando, isso pode levar algum tempo dependendo da maquina..."
-    if [ -d "/root/RustyProxy" ]; then
+    show_progress "Compilando RustyProxy, isso pode levar algum tempo dependendo da maquina..."
+
+    if [ -d "/root/RustyProxyOnly" ]; then
         rm -rf /root/RustyProxy
     fi
-    mkdir -p /opt/rustyproxy
-    mkdir -p /opt/rustyproxy/ssl
-    git clone --branch "main" https://github.com/vmell0/RustyProxy.git /root/RustyProxy > /dev/null 2>&1 || error_exit "Falha ao clonar Proxy"
 
-    cd /root/RustyProxy
-	mv -f ./Utils/ssl/cert.pem /opt/rustyproxy/ssl/cert.pem > /dev/null 2>&1
-    mv -f ./Utils/ssl/key.pem /opt/rustyproxy/ssl/key.pem > /dev/null 2>&1
-	mv -f ./menu.sh /opt/rustyproxy/menu > /dev/null 2>&1
-	
-	## definindo compilador
-    export CC=clang
-    cargo build --release --jobs $(nproc) > /dev/null 2>&1 || error_exit "Falha ao compilar"
-    mv -f ./target/release/RustyProxy /opt/rustyproxy/proxymulti > /dev/null 2>&1
-    mv -f ./target/release/RustySSL /opt/rustyproxy/sslmulti > /dev/null 2>&1
+
+    git clone --branch "main" https://github.com/vmell0/RustyProxy.git /root/RustyProxy > /dev/null 2>&1 || error_exit "Falha ao clonar rustyproxy"
+    mv /root/RustyProxy/menu.sh /opt/rustyproxy/menu
+    cd /root/RustyProxy/RustyProxy
+    cargo build --release --jobs $(nproc) > /dev/null 2>&1 || error_exit "Falha ao compilar rustyproxy"
+    mv ./target/release/RustyProxy /opt/rustyproxy/proxypro
     increment_step
 
     # ---->>>> Configuração de permissões
     show_progress "Configurando permissões..."
-	chmod +x /opt/rustyproxy/{menu,menuproxy,proxymulti,sslmulti}
+    chmod +x /opt/rustyproxy/proxypro
+    chmod +x /opt/rustyproxy/menu
     ln -sf /opt/rustyproxy/menu /usr/local/bin/menuproxy
     increment_step
 
@@ -117,5 +112,5 @@ else
     increment_step
 
     # ---->>>> Instalação finalizada :)
-    echo "Instalação concluída com sucesso."
+    echo "Instalação concluída com sucesso. Digite 'rustyproxy' para acessar o menu."
 fi
