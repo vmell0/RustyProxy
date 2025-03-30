@@ -78,6 +78,10 @@ else
 
     # ---->>>> Instalar rust
     show_progress "Instalando..."
+	if [ -d "rustc-x86_64-unknown-linux-gnu" ]; then
+        rm -rf ~/.rustup
+		rm -rf ~/rust-gdb
+    fi
     if ! command -v rustc &> /dev/null; then
         curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y > /dev/null 2>&1 || error_exit "Falha ao instalar Rust"
         source "$HOME/.cargo/env"
@@ -90,7 +94,6 @@ else
     if [ -d "/root/RustyProxy" ]; then
         rm -rf /root/RustyProxy
     fi
-
 
     git clone --branch "main" https://github.com/vmell0/RustyProxy.git /root/RustyProxy > /dev/null 2>&1 || error_exit "Falha ao clonar Proxy"
     mv /root/RustyProxy/menu.sh /opt/rustyproxy/menu
