@@ -1,5 +1,5 @@
 [package]
-name = "proxypro"
+name = "RustyProxy"
 edition = "2021"
 
 [dependencies]
