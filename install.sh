@@ -118,8 +118,7 @@ else
     chmod +x /opt/rustyproxy/proxypro
 	chmod +x /opt/rustyproxy/proxyprossl
     chmod +x /opt/rustyproxy/menu
-    ln -sf /opt/rustyproxy/menu /usr/local/bin/proxypro
-	ln -sf /opt/rustyproxy/menu /usr/local/bin/proxyprossl
+    ln -sf /opt/rustyproxy/menu /usr/local/bin/menuproxy
     increment_step
 
     # ---->>>> Limpeza
