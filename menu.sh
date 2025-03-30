@@ -129,12 +129,22 @@ del_ssl_port() {
     echo "Porta $port fechada com sucesso."
 }
 
+att_script() {
+    rm -rf /usr/local/bin/menuproxy
+	rm -rf /opt/rustyproxy/proxypro
+	rm -rf /opt/rustyproxy/proxyprossl
+	rm -rf /opt/rustyproxy/menu
+	rm -rf /root/RustyProxy
+	sudo apt update -y && sudo apt upgrade -y
+	bash <(curl -sL https://raw.githubusercontent.com/vmell0/RustyProxy/refs/heads/main/install.sh) &> /dev/null
+}
+
 # Função para exibir o menu formatado
 show_menu() {
     clear
     echo "---------------------------------------------"
     printf "                 %-28s\n" "PROXY-PRO"
-	printf "                %-28s\n" "VERSÃO: 1.0.6"
+	printf "                %-28s\n" "VERSÃO: 2.1.0"
     echo "---------------------------------------------"
     # Verifica se há portas ativas
     if [ ! -s "$PORTS_FILE" ]; then
@@ -149,6 +159,7 @@ show_menu() {
     fi
     printf "  %-45s \n" "1 - Modo Proxy"
     printf "  %-45s \n" "2 - Modo SSL"
+	printf "  %-45s \n" "3 - Atualizar Script"
     printf "  %-45s \n" "0 - Voltar ao menu"
     echo "---------------------------------------------"
     echo
@@ -163,6 +174,10 @@ show_menu() {
 		    clear
 			menu_ssl
             ;;
+		3)
+		    clear
+			att_script
+			;;
         0)
             exit 0
             ;;
