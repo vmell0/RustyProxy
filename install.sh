@@ -23,12 +23,12 @@ if [ "$EUID" -ne 0 ]; then
 else
     clear
     echo ""
-    echo -e "\033[0;34m          ____  ____   _____  ____   ______  ____   ___         "
-    echo -e "\033[0;37m         |  _ \|  _ \ / _ \ \/ /\ \ / /  _ \|  _ \ / _ \        "
-    echo -e "\033[0;37m         | |_) | |_) | | | \  /  \ V /| |_) | |_) | | | |       "
-    echo -e "\033[0;37m         |  __/|  _ <| |_| /  \   | | |  __/|  _ <| |_| |       "
-    echo -e "\033[0;37m         |_|   |_| \_\\___/_/\_\  |_| |_|   |_| \_\\___/        "                      
-    echo -e ""
+    echo -e "\033[0;34m      ____  ____   _____  ____   ______  ____   ___         
+                            |  _ \|  _ \ / _ \ \/ /\ \ / /  _ \|  _ \ / _ \        
+                            | |_) | |_) | | | \  /  \ V /| |_) | |_) | | | |       
+                            |  __/|  _ <| |_| /  \   | | |  __/|  _ <| |_| |       
+                            |_|   |_| \_\\___/_/\_\  |_| |_|   |_| \_\\___/                         
+                                                                                   \033[0m"
     show_progress "ATUALIZANDO REPOSITÓRIO..."
     export DEBIAN_FRONTEND=noninteractive
     apt update -y > /dev/null 2>&1 || error_exit "Falha ao atualizar os repositorios"
@@ -79,16 +79,16 @@ else
     increment_step
 
     # ---->>>> Instalar o RustyProxy
-    show_progress "COMPILANDO RUSTYPROXY, ISSO PODE LEVAR ALGUM TEMPO, AGUARDE..."
+    show_progress "COMPILANDO PROXY-PRO, ISSO PODE LEVAR ALGUM TEMPO, AGUARDE..."
 
-    if [ -d "/root/RustyProxyOnly" ]; then
+    if [ -d "/root/RustyProxy" ]; then
         rm -rf /root/RustyProxy
     fi
 
-    git clone --branch "main" https://github.com/VMELL0/RustyProxy.git /root/RustyProxy > /dev/null 2>&1 || error_exit "Falha ao clonar rustyproxy"
+    git clone --branch "main" https://github.com/VMELL0/RustyProxy.git /root/RustyProxy > /dev/null 2>&1 || error_exit "Falha ao clonar"
     mv /root/RustyProxy/menu.sh /opt/rustyproxy/menu
     cd /root/RustyProxy/RustyProxy
-    cargo build --release --jobs $(nproc) > /dev/null 2>&1 || error_exit "Falha ao compilar rustyproxy"
+    cargo build --release --jobs $(nproc) > /dev/null 2>&1 || error_exit "Falha ao compilar"
     mv ./target/release/RustyProxy /opt/rustyproxy/proxy
     increment_step
 
