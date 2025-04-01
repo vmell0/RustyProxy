@@ -23,12 +23,6 @@ if [ "$EUID" -ne 0 ]; then
 else
     clear
     echo ""
-    echo -e "\033[0;34m      ____  ____   _____  ____   ______  ____   ___         
-                            |  _ \|  _ \ / _ \ \/ /\ \ / /  _ \|  _ \ / _ \        
-                            | |_) | |_) | | | \  /  \ V /| |_) | |_) | | | |       
-                            |  __/|  _ <| |_| /  \   | | |  __/|  _ <| |_| |       
-                            |_|   |_| \_\\___/_/\_\  |_| |_|   |_| \_\\___/                         
-                                                                                   \033[0m"
     show_progress "ATUALIZANDO REPOSITÓRIO..."
     export DEBIAN_FRONTEND=noninteractive
     apt update -y > /dev/null 2>&1 || error_exit "Falha ao atualizar os repositorios"
@@ -64,12 +58,14 @@ else
     increment_step
 
     # ---->>>> Criando o diretório do script
+	if [ ! -f /opt/rustyproxy ]; then
     show_progress "CRIANDO DIRETÓRIO..."
     mkdir -p /opt/rustyproxy > /dev/null 2>&1
     increment_step
-
+    fi
+	
     # ---->>>> Instalar rust
-    show_progress "INSTALANDO RUST..."
+    show_progress "VERIFICANDO RUST..."
     if ! command -v rustc &> /dev/null; then
         curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y > /dev/null 2>&1 || error_exit "Falha ao instalar Rust"
         echo 'source "$HOME/.cargo/env"' >> ~/.bashrc
@@ -112,5 +108,4 @@ echo -e "\033[0;34m-------------------------------------------------------------
 echo -e "\033[40;1;37m            INSTALAÇÃO FINALIZADA COM SUCESSO                 \E[0m"
 echo -e "\033[0;34m--------------------------------------------------------------\033[0m"
 echo -e " "
-sleep 2s
 fi
