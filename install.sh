@@ -112,6 +112,7 @@ echo -e "\033[0;34m-------------------------------------------------------------
 echo -e "\033[40;1;37m            INSTALAÇÃO FINALIZADA COM SUCESSO                 \E[0m"
 echo -e "\033[0;34m--------------------------------------------------------------\033[0m"
 echo -e " "
-echo -e "\033[1;31m \033[1;33mDIGITE O COMANDO PARA ACESSAR O MENU: \033[1;32mmenuproxy\033[0m"
-echo -e " "
+sleep 2s
 fi
+clear
+menu
