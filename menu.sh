@@ -5,7 +5,7 @@ PORTS_FILE="/opt/rustyproxy/ports"
 #FUNÇÃO PARA ABRIR PORTAS DE UM PROXY
 add_proxy_port() {
     local port=$1
-    local status=${2:-"\033[1;31mWebSocket\033[0m"}
+    local status=${2:-"WebSocket"}
 
     if is_port_in_use $port; then
         echo "A PORTA $port JÁ ESTÁ EM USO."
@@ -167,9 +167,9 @@ show_menu() {
     fi
 
     echo -e "\033[0;34m--------------------------------------------------------------\033[0m"
-    echo -e "\033[1;31m[\033[1;36m01\033[1;31m] \033[1;34m◉ \033[1;33mABRIR PORTAS \033[1;31m
-[\033[1;36m02\033[1;31m] \033[1;34m◉ \033[1;33mFECHAR PORTAS \033[1;31m
-[\033[1;36m03\033[1;31m] \033[1;34m◉ \033[1;33mREINICIAR PORTAS \033[1;31m
+    echo -e "\033[1;31m[\033[1;36m01\033[1;31m] \033[1;34m◉ \033[1;33mABRIR PORTA \033[1;31m
+[\033[1;36m02\033[1;31m] \033[1;34m◉ \033[1;33mFECHAR PORTA \033[1;31m
+[\033[1;36m03\033[1;31m] \033[1;34m◉ \033[1;33mREINICIAR PORTA \033[1;31m
 [\033[1;36m04\033[1;31m] \033[1;34m◉ \033[1;33mALTERAR STATUS \033[1;31m
 [\033[1;36m05\033[1;31m] \033[1;34m◉ \033[1;33mREMOVER SCRIPT \033[1;31m
 [\033[1;36m00\033[1;31m] \033[1;34m◉ \033[1;33mSAIR DO MENU \033[1;31m"
