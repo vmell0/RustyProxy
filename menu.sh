@@ -151,8 +151,8 @@ restart_all_proxies() {
 show_menu() {
     clear
     echo -e "\033[0;34m--------------------------------------------------------------\033[0m"
-    echo -e "\033[40;1;37m                   ⚒ PROXY-PRO MANAGER ⚒                     \E[0m"
-    echo -e "\033[40;1;37m                        \033[1;32mVERSÃO: 0.2                           "
+    echo -e "\033[40;1;37m                    ⚒ PROXY-PRO MANAGER ⚒                     \E[0m"
+    echo -e "\033[40;1;37m                        \033[1;32mVERSÃO: 3.0                           "
     echo -e "\033[0;34m--------------------------------------------------------------\033[0m"
 
    #VERIFICADOR DE PORTAS ATIVAS
@@ -162,7 +162,7 @@ show_menu() {
         while read -r line; do
             port=$(echo "$line" | awk '{print $1}')
             status=$(echo "$line" | cut -d' ' -f2-)
-            printf " PORTA: %-5sON \033[1;31m%s\033[0m\n" "$port"
+            printf " PORTA: %-5s \033[1;31m%s\033[0m\n" "$port"
         done < "$PORTS_FILE"
     fi
 
