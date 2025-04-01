@@ -157,7 +157,7 @@ show_menu() {
 
    #VERIFICADOR DE PORTAS ATIVAS
     if [ ! -s "$PORTS_FILE" ]; then
-        printf "NENHUMA PORTA %-34s\n" "ON"
+        printf "NENHUMA PORTA %-34s\n" ""
     else
         while read -r line; do
             port=$(echo "$line" | awk '{print $1}')
