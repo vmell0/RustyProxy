@@ -61,8 +61,8 @@ else
 	if [ ! -f /opt/rustyproxy ]; then
     show_progress "CRIANDO DIRETÓRIO..."
     mkdir -p /opt/rustyproxy > /dev/null 2>&1
-    increment_step
     fi
+	increment_step
 	
     # ---->>>> Instalar rust
     show_progress "VERIFICANDO RUST..."
@@ -79,9 +79,11 @@ else
 
     if [ -d "/root/RustyProxy" ]; then
         rm -rf /root/RustyProxy
+		rm -rf /opt/rustyproxy
+		mkdir -p /opt/rustyproxy > /dev/null 2>&1
     fi
 
-    git clone --branch "main" https://github.com/VMELL0/RustyProxy.git /root/RustyProxy > /dev/null 2>&1 || error_exit "Falha ao clonar"
+    git clone --branch "main" https://github.com/vmell0/RustyProxy.git /root/RustyProxy > /dev/null 2>&1 || error_exit "Falha ao clonar"
     mv /root/RustyProxy/menu.sh /opt/rustyproxy/menu
     cd /root/RustyProxy/RustyProxy
     cargo build --release --jobs $(nproc) > /dev/null 2>&1 || error_exit "Falha ao compilar"

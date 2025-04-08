@@ -105,7 +105,7 @@ update_proxy_status() {
 
 #FUNÇÃO PARA DESINSTALAR RUSTY PROXY
     uninstall_rustyproxy() {
-    echo "DESINSTALANDO PROXY-PRO, AGUARDE..."
+    echo "DESINSTALANDO, AGUARDE..."
     sleep 3
     clear
 
@@ -121,7 +121,7 @@ update_proxy_status() {
     sudo rm -f "$PORTS_FILE"
 
     echo -e "\033[0;34m---------------------------------------------------------\033[0m"
-    echo -e "\033[40;1;37m           PROXY-PRO DESINSTALADO COM SUCESSO.          \E[0m"
+    echo -e "\033[40;1;37m           DESINSTALADO COM SUCESSO.                   \E[0m"
     echo -e "\033[0;34m---------------------------------------------------------\033[0m"
     sleep 4
     clear
@@ -147,15 +147,50 @@ restart_all_proxies() {
     clear
 }
 
-#EXIBIR MENU
+atualizar_script() {
+    uninstall_rustyproxy
+	bash <(wget -qO- https://raw.githubusercontent.com/vmell0/RustyProxy/refs/heads/main/install.sh)
+}
+
+executar_comando() {
+    local comando="$1"
+    local mensagem="$2"
+    local delay=0.1
+    local percent=0
+    local bar=""
+
+    echo -e "${YELLOW}${mensagem:0:50}${NC}"
+    echo -n ' '
+    
+    eval "$comando" & local cmd_pid=$!
+    
+    while kill -0 $cmd_pid 2>/dev/null; do
+        percent=$((percent + 1))
+        if [ $percent -ge 100 ]; then
+            percent=100
+        fi
+        echo -ne "       \r$percent% [${bar:0:$((percent / 5))}]"
+        sleep $delay
+        bar=$(printf "%-30s" | tr ' ' '#')
+    done
+
+    wait $cmd_pid
+    if [ $? -eq 0 ]; then
+        percent=100
+        echo -ne "       \r$percent% [${bar:0:20}]\n"
+    else
+        echo -e "\r${RED}Erro ao executar o comando.${NC}"
+    fi
+    
+    echo
+    sleep 1
+}
+
 show_menu() {
     clear
-    echo -e "\033[0;34m--------------------------------------------------------------\033[0m"
-    echo -e "\033[40;1;37m                    ⚒ PROXY-PRO MANAGER ⚒                     \E[0m"
-    echo -e "\033[40;1;37m                        \033[1;32mVERSÃO: 3.0                           "
-    echo -e "\033[0;34m--------------------------------------------------------------\033[0m"
-
-   #VERIFICADOR DE PORTAS ATIVAS
+    echo -e "\E[44;1;37m         MULTI-PROXY           \E[0m"
+    echo -e "\033[0;36m╔════════════•⊱✦⊰•════════════╗\033[0m"
+    #VERIFICADOR DE PORTAS ATIVAS
     if [ ! -s "$PORTS_FILE" ]; then
         printf "NENHUMA PORTA %-34s\n" ""
     else
@@ -165,20 +200,19 @@ show_menu() {
             printf " PORTA: %-5s \033[1;31m%s\033[0m\n" "$port"
         done < "$PORTS_FILE"
     fi
-
-    echo -e "\033[0;34m--------------------------------------------------------------\033[0m"
-    echo -e "\033[1;31m[\033[1;36m01\033[1;31m] \033[1;34m◉ \033[1;33mABRIR PORTA \033[1;31m
-[\033[1;36m02\033[1;31m] \033[1;34m◉ \033[1;33mFECHAR PORTA \033[1;31m
-[\033[1;36m03\033[1;31m] \033[1;34m◉ \033[1;33mREINICIAR PORTA \033[1;31m
-[\033[1;36m04\033[1;31m] \033[1;34m◉ \033[1;33mALTERAR STATUS \033[1;31m
-[\033[1;36m05\033[1;31m] \033[1;34m◉ \033[1;33mREMOVER SCRIPT \033[1;31m
+    echo -e "\033[0;36m° ° ° ° ° ° ° ° ° ° ° ° ° ° ° °\033[0m"
+    echo -e "\033[1;31m[\033[1;36m01\033[1;31m] \033[1;37m• \033[1;37mABRIR PORTA \033[1;31m
+[\033[1;36m02\033[1;31m] \033[1;37m• \033[1;37mFECHAR PORTA \033[1;31m
+[\033[1;36m03\033[1;31m] \033[1;37m• \033[1;37mREINICIAR PORTA \033[1;31m
+[\033[1;36m04\033[1;31m] \033[1;37m• \033[1;37mALTERAR STATUS \033[1;31m
+[\033[1;36m05\033[1;31m] \033[1;37m• \033[1;37mATUALIZAR SCRIPT \033[1;31m
+[\033[1;36m06\033[1;31m] \033[1;37m• \033[1;37mREMOVER SCRIPT \033[1;31m
 [\033[1;36m00\033[1;31m] \033[1;34m◉ \033[1;33mSAIR DO MENU \033[1;31m"
-    echo -e "\033[0;34m--------------------------------------------------------------\033[0m"
-    echo
-    read -p "  OPÇÃO: " option
-
+    echo -e "\033[0;36m╚════════════•⊱✦⊰•════════════╝\033[0m"
+    echo -ne "  \033[1;31m➤ \033[1;32mOPÇÃO\033[1;33m\033[1;31m\033[1;37m: ";
+    read option
     case $option in
-        1)
+        1 | 01)
             clear
             read -p "DIGITE A PORTA: " port
             while ! [[ $port =~ ^[0-9]+$ ]]; do
@@ -189,7 +223,7 @@ show_menu() {
             add_proxy_port $port "$status"
             read -p "✅ PORTA ATIVADA COM SUCESSO. PRESSIONE QUALQUER TECLA PARA VOLTAR AO MENU." dummy
             ;;
-        2)
+        2 | 02)
             clear
             read -p "DIGITE A PORTA: " port
             while ! [[ $port =~ ^[0-9]+$ ]]; do
@@ -199,15 +233,13 @@ show_menu() {
             del_proxy_port $port
             read -p "✅ PORTA DESATIVADA. PRESSIONE QUALQUER TECLA PARA VOLTAR AO MENU." dummy
 			clear
-            ;;
-			
-		3)
+            ;;			
+		3 | 03)
             clear
             restart_all_proxies
             read -p "✅ PORTAS REINICIADAS. PRESSIONE QUALQUER TECLA PARA VOLTAR AO MENU." dummy
-            ;;	
-			
-        4)
+            ;;				
+        4 | 04)
             clear
             read -p "DIGITE A PORTA: " port
             while ! [[ $port =~ ^[0-9]+$ ]]; do
@@ -217,16 +249,21 @@ show_menu() {
             read -p "DIGITE O NOVO STATUS DE CONEXÃO: " new_status
             update_proxy_status $port "$new_status"
             read -p "✅ STATUS DA PORTA ATUALIZADO. PRESSIONE QUALQUER TECLA PARA VOLTAR AO MENU." dummy
-            ;;
-			
-	5)
-          clear
+            ;;			
+	    5 | 05)
+            clear
+            echo ""
+            executar_comando "atualizar_script &> /dev/null" "ATUALIZANDO SCRIPT"
+			clear
+	        menuproxy
+            ;;	
+		6 | 06)
+            clear
             uninstall_rustyproxy
             read -p "◉ PRESSIONE QUALQUER TC PARA SAIR." dummy
-	    clear
+	        clear
             exit 0
             ;;	
-			
         0)
 	    clear
             exit 0
