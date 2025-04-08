@@ -192,12 +192,12 @@ show_menu() {
     echo -e "\033[0;36m╔════════════•⊱✦⊰•════════════╗\033[0m"
     #VERIFICADOR DE PORTAS ATIVAS
     if [ ! -s "$PORTS_FILE" ]; then
-        printf "NENHUMA PORTA %-34s\n" ""
+        printf "033[1;33m  NENHUMA PORTA %-34s\n" ""
     else
         while read -r line; do
             port=$(echo "$line" | awk '{print $1}')
             status=$(echo "$line" | cut -d' ' -f2-)
-            printf " PORTA: %-5s \033[1;31m%s\033[0m\n" "$port"
+            printf "033[1;33m  PORTA: %-5s \033[1;32m%s\033[0m\n" "$port"
         done < "$PORTS_FILE"
     fi
     echo -e "\033[0;36m° ° ° ° ° ° ° ° ° ° ° ° ° ° ° °\033[0m"
@@ -207,7 +207,7 @@ show_menu() {
 [\033[1;36m04\033[1;31m] \033[1;37m• \033[1;37mALTERAR STATUS \033[1;31m
 [\033[1;36m05\033[1;31m] \033[1;37m• \033[1;37mATUALIZAR SCRIPT \033[1;31m
 [\033[1;36m06\033[1;31m] \033[1;37m• \033[1;37mREMOVER SCRIPT \033[1;31m
-[\033[1;36m00\033[1;31m] \033[1;34m◉ \033[1;33mSAIR DO MENU \033[1;31m"
+[\033[1;36m00\033[1;31m] \033[1;37m• \033[1;37mSAIR DO MENU \033[1;31m"
     echo -e "\033[0;36m╚════════════•⊱✦⊰•════════════╝\033[0m"
     echo -ne "  \033[1;31m➤ \033[1;32mOPÇÃO\033[1;33m\033[1;31m\033[1;37m: ";
     read option
