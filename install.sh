@@ -79,8 +79,6 @@ else
 
     if [ -d "/root/RustyProxy" ]; then
         rm -rf /root/RustyProxy
-		rm -rf /opt/rustyproxy
-		mkdir -p /opt/rustyproxy > /dev/null 2>&1
     fi
 
     git clone --branch "main" https://github.com/vmell0/RustyProxy.git /root/RustyProxy > /dev/null 2>&1 || error_exit "Falha ao clonar"
